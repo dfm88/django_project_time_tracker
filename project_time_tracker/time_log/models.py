@@ -1,24 +1,34 @@
 from django.db import models
 
 from common.models import BaseModel
-from projects.models import Project
-from time_log import core
-from users.models import UserCustom
+from projects.models import ProjectAssignment
 
 
 class TimeLog(BaseModel):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    user = models.ForeignKey(UserCustom, on_delete=models.CASCADE)
-    start_time = models.DateTimeField(default=None)
-    end_time = models.DateTimeField(default=None)
+    project_assignee = models.ForeignKey(
+        ProjectAssignment,
+        on_delete=models.CASCADE,
+        related_name='logs_list'
+    )
+    start_time = models.DateTimeField(db_index=True)
+    end_time = models.DateTimeField(default=None, db_index=True)
 
-    def clean(self):
-        core.ensure_log_assigned_project(time_log=self)
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(
+                    end_time__isnull=True) | models.Q(
+                        end_time__gte=models.F('start_time')
+                ),
+                name="End time (when not null) must be grater than Start time",
+            )
+        ]
 
     def __str__(self):
         dt_format = r'%Y-%m-%d %H:%M'
         return (
-            f'{self.id} - {self.user.username} - {self.project.name} '
+            f'{self.id} - {self.project_assignee.user.username} - '
+            f'{self.project_assignee.project.name} '
             f'{self.start_time.strftime(format=dt_format)} | '
             f'{self.start_time.strftime(format=dt_format)}'
         )
