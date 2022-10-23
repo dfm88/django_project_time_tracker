@@ -7,7 +7,6 @@ if TYPE_CHECKING:
 from django.forms import ValidationError
 
 
-
 def ensure_log_assigned_project(time_log: "TimeLog") -> None:
     """Checks that logger user is logging to an assigned project
 

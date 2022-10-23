@@ -2,4 +2,9 @@ from django.contrib import admin
 
 from .models import TimeLog
 
-admin.site.register(TimeLog)
+
+class TimeLogAdmin(admin.ModelAdmin):
+    list_filter = ('project',)
+
+
+admin.site.register(TimeLog, TimeLogAdmin)

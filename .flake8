@@ -1,4 +1,5 @@
 [flake8]
 per-file-ignores =
     settings.py:F401,E501
+    **/migrations/*:E501
 max-line-length = 100
