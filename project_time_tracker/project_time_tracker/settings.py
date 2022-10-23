@@ -51,6 +51,7 @@ INSTALLED_APPS += [
 
 # Apps
 INSTALLED_APPS += [
+    'common',
     'projects',
     'time_log',
     'users',
@@ -114,6 +115,7 @@ CACHE_PORT = os.environ.get('CACHE_PORT')
 #     }
 # }
 
+AUTH_USER_MODEL = 'users.UserCustom'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
