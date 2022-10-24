@@ -29,6 +29,17 @@ class BaseCRUD:
                 f'Found multiple instances of {self.model.__name__} with {kwargs}, use filter_by'
             )
 
+    def get_by_or_none(self, **kwargs) -> models.Model | None:
+        """Get a model based on kwargs. Doesn't throw exceptions
+
+        Returns:
+            models.Model | None
+        """
+        try:
+            return self.get_by(**kwargs)
+        except (self.model.DoesNotExist, self.model.MultipleObjectsReturned):
+            return None
+
     def filter_by(self, **kwargs) -> models.QuerySet:
         """Get a queryset based on kwargs
 

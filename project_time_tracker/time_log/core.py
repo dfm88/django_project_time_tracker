@@ -1,5 +1,7 @@
-
+import datetime
 from typing import TYPE_CHECKING
+
+from django.db import models
 
 if TYPE_CHECKING:
     from time_log.models import TimeLog
@@ -73,3 +75,23 @@ def ensure_ranges_dont_overlap(time_log: "TimeLog") -> None:
             time_log=time_log,
             other_time_log=other_time_log
         )
+
+
+def calculate_spent_time(time_logs: models.QuerySet["TimeLog"]) -> str:
+    """Given a queryset of TimeLogs, return the total amount
+    of time worked in the format
+
+    HH:MM:SS
+
+    Args:
+        time_logs (models.QuerySet[TimeLog])
+
+    Returns:
+        str: total time
+    """
+    seconds = 0
+    for time_log in time_logs:
+        aa = time_log.end_time - time_log.start_time
+        seconds += aa.total_seconds()
+
+    return str(datetime.timedelta(seconds=seconds)),

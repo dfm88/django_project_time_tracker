@@ -21,4 +21,5 @@ urlpatterns = [
     path('', RedirectView.as_view(url='admin/')),
     path('admin/', admin.site.urls),
     path('time_log/', include('time_log.urls')),
+    path('projects/', include('projects.urls')),
 ]

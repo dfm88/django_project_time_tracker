@@ -6,7 +6,7 @@ from users.serializers import UserSerializer
 from .models import Project, ProjectAssignment
 
 
-class ReadProjectSerializer(serializers.ModelSerializer):
+class ProjectSerializer(serializers.ModelSerializer):
     assignees = UserSerializer(many=True, read_only=True)
     creator = UserSerializer(read_only=True)
 
@@ -14,7 +14,7 @@ class ReadProjectSerializer(serializers.ModelSerializer):
         model = Project
 
 
-class ReadProjectAssignmentSerializer(serializers.ModelSerializer):
+class ProjectAssignmentSerializer(serializers.ModelSerializer):
 
     class Meta(BaseMeta):
         model = ProjectAssignment

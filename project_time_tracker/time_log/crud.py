@@ -4,6 +4,7 @@ from django.db import models, transaction
 
 from common.crud import BaseCRUD
 from projects.models import ProjectAssignment
+from users.models import UserCustom
 
 from .models import TimeLog
 
@@ -16,6 +17,19 @@ class TimeLogCRUD(BaseCRUD):
         return self.model.objects.filter(
             project_assignment__user=user_id,
             project_assignment__project=project_id
+        )
+
+    def get_logs_for_statistics(self, project_id, user: UserCustom = None) -> models.QuerySet:
+        """Get all logs by project and optionally by user"""
+        user_filter = models.Q()
+        if user:
+            user_filter = models.Q(project_assignment__user=user)
+        return self.model.objects.filter(
+            project_assignment__project=project_id,
+        ).filter(
+            user_filter
+        ).exclude(
+            end_time__isnull=True
         )
 
     @transaction.atomic

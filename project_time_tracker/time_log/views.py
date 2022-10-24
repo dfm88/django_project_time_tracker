@@ -2,16 +2,19 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from common.permissions import IsAssignedToProjectOrAdmin, IsLogOwnerOrAdmin
 from common.serializers import serialize_input_data
 from projects.crud import project_assign_crud
+from projects.mixins import ProjectIdQueryStringMixin
 from projects.models import Project
-from projects.views import IsAssignedToProjectOrAdmin, ProjectIdMixin
 from time_log.crud import time_log_crud
-from time_log.permissions import IsLogOwnerOrAdmin
+from time_log.models import TimeLog
 from time_log.serializers import TimeLogSerializer
 
+from .mixins import TimeLogFromIdMixin
 
-class TimeLogListCreateApi(ProjectIdMixin, APIView):
+
+class TimeLogListCreateApi(ProjectIdQueryStringMixin, APIView):
     permission_classes = (IsAssignedToProjectOrAdmin,)
 
     def get(self, request, project: Project, *args, **kwargs):
@@ -45,18 +48,16 @@ class TimeLogListCreateApi(ProjectIdMixin, APIView):
         return Response(ser_data, status=status.HTTP_201_CREATED)
 
 
-class TimeLogRetrieveUpdateDelete(APIView):
+class TimeLogRetrieveUpdateDelete(TimeLogFromIdMixin, APIView):
 
     permission_classes = (IsLogOwnerOrAdmin, )
 
-    def get(self, request, item_id: int):
-        time_log = time_log_crud.get_by(pk=item_id)
+    def get(self, request, time_log_id: int, time_log: TimeLog):
         self.check_object_permissions(request, time_log)
         data = TimeLogSerializer(time_log).data
         return Response(data)
 
-    def put(self, request, item_id: int):
-        time_log = time_log_crud.get_by(pk=item_id)
+    def put(self, request, time_log_id: int, time_log: TimeLog):
         self.check_object_permissions(request, time_log)
 
         # serialize input data
@@ -67,15 +68,15 @@ class TimeLogRetrieveUpdateDelete(APIView):
 
         # update time log
         time_log_crud.update_time_log(
-            time_log_id=item_id,
+            time_log_id=time_log_id,
             **validated_data
         )
+        time_log.refresh_from_db()
 
         ser_data = TimeLogSerializer(time_log).data
         return Response(ser_data)
 
-    def delete(self, request, item_id: int):
-        time_log = time_log_crud.get_by(pk=item_id)
+    def delete(self, request, time_log_id: int, time_log: TimeLog):
         self.check_object_permissions(request, time_log)
         time_log_crud.delete(instance=time_log)
         return Response(status=status.HTTP_204_NO_CONTENT)
