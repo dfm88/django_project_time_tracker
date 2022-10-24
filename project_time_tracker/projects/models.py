@@ -1,5 +1,6 @@
-from common.models import BaseModel
 from django.db import models
+
+from common.models import BaseModel
 from users.models import UserCustom
 
 
@@ -26,6 +27,11 @@ class Project(BaseModel):
 class ProjectAssignment(BaseModel):
     user = models.ForeignKey(UserCustom, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = (
+            ('user', 'project')
+        )
 
     def __str__(self):
         return f'{self.id} - {self.user.username} | {self.project.name}'

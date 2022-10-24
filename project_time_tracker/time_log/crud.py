@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
 
-from common.crud import BaseCRUD
 from django.db import models, transaction
+
+from common.crud import BaseCRUD
 from projects.models import ProjectAssignment
 
 from .models import TimeLog
@@ -11,12 +12,19 @@ from .models import TimeLog
 class TimeLogCRUD(BaseCRUD):
     model: TimeLog = field(default=TimeLog, init=False)
 
-    def get_logs_by_project(self, project_id: int) -> models.QuerySet:
-        return self.model.objects.filter(project_assignment__project=project_id)
+    def get_logs_by_user_project(self, project_id: int, user_id: int) -> models.QuerySet:
+        return self.model.objects.filter(
+            project_assignment__user=user_id,
+            project_assignment__project=project_id
+        )
 
     @transaction.atomic
-    def update_time_log(self, time_log_id: int, **data) -> TimeLog:
-        pass
+    def update_time_log(self, time_log_id: int, **data) -> None:
+        self.model.objects.filter(
+            pk=time_log_id
+        ).update(
+            **data
+        )
 
     @transaction.atomic
     def create_time_log(self, project_assignment: ProjectAssignment, **data) -> TimeLog:

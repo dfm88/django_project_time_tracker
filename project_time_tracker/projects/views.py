@@ -1,19 +1,16 @@
-from common.permissions import IsAssignedToProjectOrAdmin
-from projects.crud import project_crud
 from rest_framework.exceptions import ParseError
 from rest_framework.views import APIView
 
+from projects.crud import project_crud
 
-class ProjectIdPermissionMixin(APIView):
-    permission_classes = (IsAssignedToProjectOrAdmin,)
+
+class ProjectIdMixin(APIView):
 
     """Override `initial` method of ApiVIEW"""
     def initial(self, request, *args, **kwargs):
         """
         Returns the initial request object with additional
         kwargs['project']: Project if`project_id` is passes as query param
-
-        Checks if request.user is assigned to project
 
         Args:
             request:
@@ -27,7 +24,6 @@ class ProjectIdPermissionMixin(APIView):
             raise ParseError('project_id query param is required')
 
         proj = project_crud.get_by(pk=project_id)
-        self.check_object_permissions(request, proj)
 
         # add project_id to context
         request.parser_context['kwargs']['project'] = proj

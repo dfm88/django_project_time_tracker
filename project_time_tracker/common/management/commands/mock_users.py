@@ -2,6 +2,7 @@ import logging
 import sys
 
 from django.core.management.base import BaseCommand
+
 from users.models import UserCustom
 
 logger = logging.getLogger(__name__)

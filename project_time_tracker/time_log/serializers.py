@@ -1,6 +1,7 @@
+from rest_framework import serializers
+
 from common.serializers import BaseMeta
 from projects.serializers import ReadProjectAssignmentSerializer
-from rest_framework import serializers
 
 from .models import TimeLog
 

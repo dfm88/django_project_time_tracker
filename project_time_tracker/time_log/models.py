@@ -1,5 +1,6 @@
-from common.models import BaseModel
 from django.db import models
+
+from common.models import BaseModel
 from projects.models import ProjectAssignment
 
 
@@ -10,10 +11,11 @@ class TimeLog(BaseModel):
         related_name='logs_list'
     )
     start_time = models.DateTimeField(db_index=True)
-    end_time = models.DateTimeField(default=None, db_index=True)
+    end_time = models.DateTimeField(null=True, blank=True, default=None, db_index=True)
 
     def clean(self) -> None:
-        print('called timelog clean')
+        from .core import ensure_ranges_dont_overlap
+        ensure_ranges_dont_overlap(time_log=self)
         return super().clean()
 
     class Meta:
@@ -29,9 +31,11 @@ class TimeLog(BaseModel):
 
     def __str__(self):
         dt_format = r'%Y-%m-%d %H:%M'
+        start_time = self.start_time.strftime(format=dt_format)
+        end_time = self.end_time and self.end_time.strftime(format=dt_format)
         return (
             f'{self.id} - {self.project_assignment.user.username} - '
             f'{self.project_assignment.project.name} '
-            f'{self.start_time.strftime(format=dt_format)} | '
-            f'{self.start_time.strftime(format=dt_format)}'
+            f'{start_time} | '
+            f'{end_time}'
         )

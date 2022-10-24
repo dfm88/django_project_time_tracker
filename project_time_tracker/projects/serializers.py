@@ -1,5 +1,6 @@
-from common.serializers import BaseMeta
 from rest_framework import serializers
+
+from common.serializers import BaseMeta
 from users.serializers import UserSerializer
 
 from .models import Project, ProjectAssignment

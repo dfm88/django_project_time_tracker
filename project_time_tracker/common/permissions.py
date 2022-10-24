@@ -1,5 +1,6 @@
-from projects.models import Project
 from rest_framework import permissions
+
+from projects.models import Project
 
 
 class IsAssignedToProjectOrAdmin(permissions.BasePermission):
