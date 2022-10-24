@@ -72,7 +72,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
-    'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
+    'EXCEPTION_HANDLER': 'common.exceptions.custom_exception_handler',
 }
 
 ROOT_URLCONF = "project_time_tracker.urls"

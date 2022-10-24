@@ -5,8 +5,8 @@ from .models import TimeLog
 
 class TimeLogAdmin(admin.ModelAdmin):
     list_filter = (
-        'project_assignee__project',
-        'project_assignee__user',
+        'project_assignment__project',
+        'project_assignment__user',
     )
 
 

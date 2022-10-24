@@ -1,6 +1,5 @@
-from rest_framework import permissions
-
 from common.permissions import IsAssignedToProjectOrAdmin
+from rest_framework import permissions
 
 from .models import TimeLog
 
@@ -25,7 +24,7 @@ class IsLogOwner(IsAssignedToProjectOrAdmin):
         user_in_project = super().has_object_permission(
             request=request,
             view=view,
-            obj=time_log.project_assignee.project
+            obj=time_log.project_assignment.project
         )
         if not user_in_project:
             self.message = super().message
@@ -37,4 +36,4 @@ class IsLogOwner(IsAssignedToProjectOrAdmin):
             return True
 
         # Request User must be the logger to write the object
-        return time_log.project_assignee.user == request.user
+        return time_log.project_assignment.user == request.user

@@ -1,46 +1,45 @@
-from rest_framework.exceptions import ParseError
+from projects.crud import project_assign_crud
+from projects.models import Project
+from projects.views import ProjectIdPermissionMixin
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-from common.permissions import IsAssignedToProjectOrAdmin
-from projects.crud import project_crud
-
 from time_log.crud import time_log_crud
 from time_log.permissions import IsLogOwner
 from time_log.serializers import TimeLogSerializer
 
 
-class TimeLogApiViewMixin:
-    """Override `initial` method of ApiVIEW"""
-    def initial(self, request, *args, **kwargs):
-        """
-        Returns the initial request object.
-        """
-        super().initial(request, *args, **kwargs)
-        project_id = self.request.query_params.get('project_id')
-        if not project_id:
-            raise ParseError('project_id query param is required')
+class TimeLogListCreateApi(ProjectIdPermissionMixin, APIView):
 
-
-class TimeLogListCreateApi(TimeLogApiViewMixin, APIView):
-
-    permission_classes = (IsAssignedToProjectOrAdmin,)
-
-    def get(self, request):
-        project_id = request.query_params['project_id']
-        proj = project_crud.get_by(pk=project_id)
-        # checks that user belongs to project
-        self.check_object_permissions(request, proj)
-        time_logs = time_log_crud.get_logs_by_project(project_id=project_id)
+    def get(self, request, project: Project, *args, **kwargs):
+        time_logs = time_log_crud.get_logs_by_project(project_id=project.id)
         data = TimeLogSerializer(time_logs, many=True).data
         return Response(data)
 
+    def post(self, request, project: Project, *args, **kwargs):
+        time_log_serializer = TimeLogSerializer(data=request.data)
 
-class TimeLogRetrieveUpdateDelete(TimeLogApiViewMixin, APIView):
+        if time_log_serializer.is_valid(raise_exception=True):
+            data = time_log_serializer.data
+
+        project_assignemnt_obj = project_assign_crud.get_by(
+            user_id=request.user.id,
+            project_id=project.id
+        )
+
+        time_log_obj = time_log_crud.create_time_log(
+            project_assignment=project_assignemnt_obj,
+            **data
+        )
+
+        ser_data = TimeLogSerializer(time_log_obj).data
+        return Response(ser_data)
+
+
+class TimeLogRetrieveUpdateDelete(ProjectIdPermissionMixin, APIView):
 
     permission_classes = (IsLogOwner, )
 
-    def get(self, request, item_id: int):
+    def get(self, request, item_id: int, *args, project=None):
         time_log = time_log_crud.get_by(pk=item_id)
         self.check_object_permissions(request, time_log)
         data = TimeLogSerializer(time_log).data

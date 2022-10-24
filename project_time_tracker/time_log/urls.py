@@ -1,5 +1,4 @@
 from django.urls import path
-
 from time_log.views import TimeLogListCreateApi, TimeLogRetrieveUpdateDelete
 
 urlpatterns = [
