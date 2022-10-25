@@ -11,3 +11,12 @@ services:
       - ./.env
     ports:
       - "5454:5432"
+
+## REDIS
+  redis:
+    image: redis:alpine
+    container_name: ptt_cache
+    env_file:
+      - ./.env
+    ports:
+      - "6389:6379"

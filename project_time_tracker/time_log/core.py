@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 from django.forms import ValidationError
 
-from .crud import time_log_crud
+from time_log.crud import time_log_crud
 
 
 def _check_ranges_dont_overlap(

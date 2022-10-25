@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import BaseModel
+from common.models import BaseModel
 
 
 class BaseMeta:

@@ -1,9 +1,8 @@
 from rest_framework import serializers
 
 from common.serializers import BaseMeta
+from projects.models import Project, ProjectAssignment
 from users.serializers import UserSerializer
-
-from .models import Project, ProjectAssignment
 
 
 class ProjectSerializer(serializers.ModelSerializer):

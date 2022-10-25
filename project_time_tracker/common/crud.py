@@ -1,3 +1,4 @@
+from abc import ABC
 from dataclasses import dataclass
 
 from django.db import models
@@ -5,7 +6,7 @@ from rest_framework.exceptions import NotAcceptable, NotFound
 
 
 @dataclass
-class BaseCRUD:
+class BaseCRUD(ABC):
     model: models.Model
 
     def get_by(self, **kwargs) -> models.Model:

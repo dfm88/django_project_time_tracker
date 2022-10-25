@@ -47,6 +47,7 @@ INSTALLED_APPS = [
 # Libraries
 INSTALLED_APPS += [
     'rest_framework',
+    'silk',
 ]
 
 # Apps
@@ -61,11 +62,17 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
+    'django.middleware.cache.FetchFromCacheMiddleware',
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+# # Progiling middleware
+# MIDDLEWARE += [
+#     'silk.middleware.SilkyMiddleware',
+# ]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -110,18 +117,19 @@ DATABASES = {
     },
 }
 
-CACHE_NAME = os.environ.get('CACHE_NAME')
+CACHE_HOST = os.environ.get('CACHE_HOST')
 CACHE_PORT = os.environ.get('CACHE_PORT')
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django_redis.cache.RedisCache",
-#         "LOCATION": f"redis://{CACHE_NAME}:{CACHE_PORT}/1",
-#         "OPTIONS": {
-#             "CLIENT_CLASS": "django_redis.client.DefaultClient"
-#         },
-#         "KEY_PREFIX": "ptt_"
-#     }
-# }
+CACHE_TTL = 60 * 5  # 5 minutes cache
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://{CACHE_HOST}:{CACHE_PORT}/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": "ptt_"
+    }
+}
 
 AUTH_USER_MODEL = 'users.UserCustom'
 
@@ -160,6 +168,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = STATIC_URL
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

@@ -3,8 +3,7 @@ from dataclasses import dataclass, field
 from django.db import models
 
 from common.crud import BaseCRUD
-
-from .models import UserCustom
+from users.models import UserCustom
 
 
 @dataclass

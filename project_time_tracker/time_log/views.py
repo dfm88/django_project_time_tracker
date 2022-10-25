@@ -1,3 +1,5 @@
+from django.utils.decorators import method_decorator
+from django.views.decorators.vary import vary_on_headers
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -8,18 +10,18 @@ from projects.crud import project_assign_crud
 from projects.mixins import ProjectIdQueryStringMixin
 from projects.models import Project
 from time_log.crud import time_log_crud
+from time_log.mixins import TimeLogFromIdMixin
 from time_log.models import TimeLog
 from time_log.serializers import TimeLogSerializer
-
-from .mixins import TimeLogFromIdMixin
 
 
 class TimeLogListCreateApi(ProjectIdQueryStringMixin, APIView):
     permission_classes = (IsAssignedToProjectOrAdmin,)
 
+    @method_decorator(vary_on_headers("Authorization",))
     def get(self, request, project: Project, *args, **kwargs):
         self.check_object_permissions(request, project)
-        time_logs = time_log_crud.filter_by(project_id=project.id)
+        time_logs = time_log_crud.filter_by(project_assignment__project=project.id)
         data = TimeLogSerializer(time_logs, many=True).data
         return Response(data)
 
@@ -52,6 +54,7 @@ class TimeLogRetrieveUpdateDelete(TimeLogFromIdMixin, APIView):
 
     permission_classes = (IsLogOwnerOrAdmin, )
 
+    @method_decorator(vary_on_headers("Authorization",))
     def get(self, request, time_log_id: int, time_log: TimeLog):
         self.check_object_permissions(request, time_log)
         data = TimeLogSerializer(time_log).data

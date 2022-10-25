@@ -23,3 +23,6 @@ urlpatterns = [
     path('time_log/', include('time_log.urls')),
     path('projects/', include('projects.urls')),
 ]
+
+# profiler urls
+# urlpatterns += [path('silk/', include('silk.urls', namespace='silk'))]

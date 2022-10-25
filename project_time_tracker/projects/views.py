@@ -1,4 +1,8 @@
+import functools
+
 from django.db import models
+from django.utils.decorators import method_decorator
+from django.views.decorators.vary import vary_on_headers
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -19,6 +23,7 @@ from users.models import UserCustom
 class ProjectListCreateApi(APIView):
     permission_classes = (IsAdminForWriting,)
 
+    @method_decorator(vary_on_headers("Authorization",))
     def get(self, request):
         projects = project_crud.get_projects_per_user_role(
             user=request.user
@@ -46,6 +51,7 @@ class ProjectListCreateApi(APIView):
 class ProjectRetrieveUpdateDelete(ProjectFromIdMixin, APIView):
     permission_classes = (IsAdminForWriting, IsAssignedToProjectOrAdmin,)
 
+    @method_decorator(vary_on_headers("Authorization",))
     def get(self, request, project_id: int, project: Project):
         self.check_object_permissions(request, project)
         data = ProjectSerializer(project).data
@@ -77,6 +83,7 @@ class ProjectHandleUsers(ProjectFromIdMixin, APIView):
     permission_classes = (IsAdminForWriting, )
 
     @staticmethod
+    @functools.lru_cache(maxsize=64)
     def _get_users_from_body(body: list) -> models.QuerySet:
         return user_crud.get_users_from_usernames(usernames=body)
 
@@ -107,6 +114,7 @@ class ProjectHandleUsers(ProjectFromIdMixin, APIView):
 class ProjectStatistics(UserIdQueryStringMixin, APIView):
     permission_classes = (IsAssignedToProjectOrAdmin, )
 
+    @method_decorator(vary_on_headers("Authorization",))
     def get(self, request, project_id: int, project: Project, user: UserCustom = None):
         """
         Lists total time spent on the given project from all assignees

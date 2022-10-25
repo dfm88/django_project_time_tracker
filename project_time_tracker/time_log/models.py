@@ -14,7 +14,7 @@ class TimeLog(BaseModel):
     end_time = models.DateTimeField(null=True, blank=True, default=None, db_index=True)
 
     def clean(self) -> None:
-        from .core import ensure_ranges_dont_overlap
+        from time_log.core import ensure_ranges_dont_overlap
         ensure_ranges_dont_overlap(time_log=self)
         return super().clean()
 

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from rest_framework.exceptions import ParseError
 from rest_framework.views import APIView
 
-from .crud import BaseCRUD
+from common.crud import BaseCRUD
 
 
 @dataclass

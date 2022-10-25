@@ -4,14 +4,23 @@ from django.db import models, transaction
 
 from common.crud import BaseCRUD
 from projects.models import ProjectAssignment
+from time_log.models import TimeLog
 from users.models import UserCustom
-
-from .models import TimeLog
 
 
 @dataclass
 class TimeLogCRUD(BaseCRUD):
     model: TimeLog = field(default=TimeLog, init=False)
+
+    def get_by(self, **kwargs) -> models.Model:
+        try:
+            return self.model.objects.prefetch_related(
+                'project_assignment'
+            ).select_related(
+                'project_assignment__project'
+            ).get(**kwargs)
+        except Exception:
+            return super().get_by(**kwargs)
 
     def get_logs_by_user_project(self, project_id: int, user_id: int) -> models.QuerySet:
         return self.model.objects.filter(
@@ -50,6 +59,18 @@ class TimeLogCRUD(BaseCRUD):
         time_log_obj.save()
         time_log_obj.refresh_from_db()
         return time_log_obj
+
+    def filter_by(self, **kwargs) -> models.QuerySet:
+        """Get a queryset based on kwargs
+
+        Returns:
+            models.QuerySet
+        """
+        return self.model.objects.select_related(
+            'project_assignment'
+        ).select_related(
+            'project_assignment__project'
+        ).filter(**kwargs)
 
 
 time_log_crud = TimeLogCRUD()
