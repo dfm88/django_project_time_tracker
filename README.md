@@ -1,19 +1,19 @@
-# Contents
-* ## [Intro](#intro)
-* ## [Models](#models)
-* ## [Views](#views)
-  * ### [Authentication](#auth )
-  * ### [Permissions](#permissions)
-  * ### [Mixins](#mixins)
-  * ### [Cache](#cache)
-  * ### [Endpoints](#endpoints)
-* ## [Crud](#crud)
-* ## [Core](#core)
-# Run
-* ## [Run from docker-compose](#docker)
+## Contents
+- [Intro](#intro)
+- [Models](#models)
+- [Views](#views)
+  - [Authentication](#authentication)
+  - [Permissions](#permissions)
+  - [Mixins](#mixins)
+  - [Cache](#cache)
+  - [Endpoints](#endpoints)
+- [Crud](#crud)
+
+## Run
+- [Run from docker-compose](#run-from-docker-compose)
 __________
 __________
-## <p id="intro">Intro<p>
+## [Intro](#intro)
 The project is initialized by a Django Command `common/management/commands/mock_users_and_projects.py`, this command creates 15 users from `user_1` to `user_15` with password `Passw0rd!` and an admin user with username `admin` and password `Passw0rd!`.
 
 It also creates 3 `project` instances assigning users as follow:
@@ -28,7 +28,7 @@ Access to database is done by `crud` modules, so that Views can access to DB onl
 
 Main business logic is done in `core` or in `permissions` modules.
 
-## <p id="models">Models<p>
+## [Models](#models)
 
 * **common/models:BaseModel**
     
@@ -52,12 +52,12 @@ Main business logic is done in `core` or in `permissions` modules.
     
     Simply inherits from Django default `AbstractUser` model.
 
-## <p id="views">Views<p>
+## [Views](#views)
 
-### [Authentication](#auth )
+### [Authentication](#authentication)
 It is Session based authentication on top of all views and it is handled by `REST_FRAMEWORK` Basic Authentication and SessionAuthentication `DEFAULT_AUTHENTICATION_CLASSES`
 
-### <p id="permissions">Permissions<p>
+### [Permissions](#permissions)
 As a general rule, Admin user can do any operation, so next consideration are applied only to standard users. All classes inherits from `rest_framework.permissions.BasePermissions` overriding, as needed, `has_permission` and `has_object_permissions` method
 
 * **common/permissions:IsAssignedToProjectOrAdmin**
@@ -73,7 +73,7 @@ As a general rule, Admin user can do any operation, so next consideration are ap
     Inherits from `rest_framework.permissions.IsAdminUser` to ensure that specic view is accessed by non admin users only for reading operations.
 
 
-### <p id="mixins">Mixins<p>
+### [Mixins](#mixins)
 All custom mixins implements the `initial` method of `rest_framework.views.APIView` mostly to inject in the view kwargs a specific object or to ensure that a required query parameter was provided
 
 * **common/mixins:ObjectFromIdMixin**
@@ -98,11 +98,11 @@ Optionally it can be defined as `required` so that if it is not found it will ra
     Takes user from optional `?user_id=_` query param
 
 
-### <p id="cache">Cache<p>
+### [Cache](#cache)
 Is implemented with a Redis container, it caches the GET views at high level
 
 
-### <p id="endpoints">Endpoints<p>
+### [Endpoints](#endpoints)
 * **projects/views:ProjectListCreateApi**
 
     ```shell
@@ -256,14 +256,14 @@ Is implemented with a Redis container, it caches the GET views at high level
     
     Delete a time_log if user was the logger (admin deleted them all)
 
-## <p id="crud">Crud<p>
+## [Crud](#crud)
 In this module there are the classes that access to Database.
 All classes inherit from `common/crud:BaseCRUD` that implements some basic methods.
 
 __________
 __________
 
-## <p id="docker">Run from docker-compose<p>
+## [Run from docker-compose](#run-from-docker-compose)
 
 ```shell
 docker-compose up -d
