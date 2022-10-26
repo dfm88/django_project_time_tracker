@@ -47,8 +47,13 @@ INSTALLED_APPS = [
 # Libraries
 INSTALLED_APPS += [
     'rest_framework',
-    'silk',
+    # 'silk',
 ]
+
+# # Profiling
+# INSTALLED_APPS += [
+#     'silk',
+# ]
 
 # Apps
 INSTALLED_APPS += [

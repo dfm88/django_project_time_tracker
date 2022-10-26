@@ -22,10 +22,12 @@ class BaseCRUD(ABC):
         try:
             return self.model.objects.get(**kwargs)
         except self.model.DoesNotExist:
+            # rest framework exception so that view will handle the response
             raise NotFound(
                 f'{self.model.__name__} not found with {kwargs}'
             )
         except self.model.MultipleObjectsReturned:
+            # rest framework exception so that view will handle the response
             raise NotAcceptable(
                 f'Found multiple instances of {self.model.__name__} with {kwargs}, use filter_by'
             )

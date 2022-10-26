@@ -117,7 +117,7 @@ class ProjectStatistics(UserIdQueryStringMixin, APIView):
     @method_decorator(vary_on_headers("Authorization",))
     def get(self, request, project_id: int, project: Project, user: UserCustom = None):
         """
-        Lists total time spent on the given project from all assignees
+        Total time spent on the given project from all assignees
 
         Optional query_parameter `user_id` to show only time of a specific user
         """

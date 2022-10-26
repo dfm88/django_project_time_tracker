@@ -21,7 +21,6 @@ class ObjectFromIdMixin(APIView):
         request's kwargs[self.injection_name] calling the default self.crud_instance
         `get_by` method with the `pk` as key and lookup_name as value.
 
-
         Args:
             request:
 
@@ -38,6 +37,7 @@ class ObjectFromIdMixin(APIView):
         item = None
         if not lookup_value:
             if self.required:
+                # rest framework exception so that view will handle the response
                 raise ParseError(self.required_error_msg)
 
         else:
