@@ -267,7 +267,7 @@ __________
 
 The Django server is exposed on port `7777`
 ```shell
-docker-compose up -d
+docker-compose up
 ```
 
 To run tests, from a different terminal run 
