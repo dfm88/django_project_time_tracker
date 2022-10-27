@@ -265,6 +265,17 @@ __________
 
 ## [Run from docker-compose](#run-from-docker-compose)
 
+The Django server is exposed on port `7777`
 ```shell
 docker-compose up -d
+```
+
+To run tests, from a different terminal run 
+```shell
+docker exec ptt_backend python project_time_tracker/manage.py test tests     
+```
+
+To run again the init command, run 
+```shell
+docker exec ptt_backend python project_time_tracker/manage.py mock_users_and_projects     
 ```

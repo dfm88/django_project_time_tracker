@@ -61,7 +61,8 @@ class ProjectRetrieveUpdateDelete(ProjectFromIdMixin, APIView):
         # serialize input data
         validated_data = serialize_input_data(
             serializer=ProjectSerializer,
-            data=request.data
+            data=request.data,
+            partial=True,
         )
 
         # update project log

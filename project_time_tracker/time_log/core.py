@@ -35,13 +35,20 @@ def _check_ranges_dont_overlap(
         raise ValidationError(
             f'You should close this time log first: "{other_time_log}"'
         )
+    # if new time_log doesn't have and end,
+    # fake it to 1 ms more than start_time
+    end_time = time_log.end_time
+    if end_time is None:
+        end_time = (
+            time_log.start_time + datetime.timedelta(milliseconds=1)
+        )
 
     # checks that time range don't overlap
     max_start_time = max(
         time_log.start_time, other_time_log.start_time
     )
     min_end_time = min(
-        time_log.end_time, other_time_log.end_time
+        end_time, other_time_log.end_time
     )
 
     if (min_end_time - max_start_time).total_seconds() > 0:
@@ -94,4 +101,4 @@ def calculate_spent_time(time_logs: models.QuerySet["TimeLog"]) -> str:
         aa = time_log.end_time - time_log.start_time
         seconds += aa.total_seconds()
 
-    return str(datetime.timedelta(seconds=seconds)),
+    return str(datetime.timedelta(seconds=seconds))

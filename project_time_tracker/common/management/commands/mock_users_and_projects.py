@@ -2,8 +2,8 @@ import logging
 import sys
 
 from django.core.management.base import BaseCommand
-from projects.models import Project
 
+from projects.models import Project
 from users.models import UserCustom
 
 logger = logging.getLogger(__name__)
@@ -44,8 +44,12 @@ class Command(BaseCommand):
                     creator=admin
                 )
                 if i != 2:
-                    logger.info(f'Assigning project {proj_name} to users from user_{i*5+1} to user_{i*5+5}')
-                    project.assignees.set(UserCustom.objects.order_by('date_joined').all()[(i * 5):(i + 1) * 5])
+                    logger.info(
+                        f'Assigning project {proj_name} to users from user_{i*5+1} to user_{i*5+5}'
+                    )
+                    project.assignees.set(
+                        UserCustom.objects.order_by('date_joined').all()[(i * 5):(i + 1) * 5]
+                    )
 
         except Exception as ex:
             logger.exception(ex)

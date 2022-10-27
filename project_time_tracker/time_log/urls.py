@@ -2,7 +2,6 @@ from django.conf import settings
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.urls import path
 from django.views.decorators.cache import cache_page
-from django.views.decorators.vary import vary_on_headers
 
 from time_log.views import TimeLogListCreateApi, TimeLogRetrieveUpdateDelete
 

@@ -79,7 +79,6 @@ ENV IMAGE_NAME=${DEFAULT_IMAGE_NAME}
 RUN apt-get update && apt-get install -y \
     vim \
     postgresql-client \
-    curl \
  && rm -rf /var/lib/apt/lists/*  
  
 

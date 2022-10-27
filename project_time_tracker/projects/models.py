@@ -5,7 +5,7 @@ from users.models import UserCustom
 
 
 class Project(BaseModel):
-    name = models.CharField(max_length=32)
+    name = models.CharField(max_length=32, unique=True)
     description = models.TextField()
     creator = models.ForeignKey(
         UserCustom,
