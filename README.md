@@ -214,7 +214,7 @@ Is implemented with a Redis container, it caches the GET views at high level
 
     **POST**
     
-    Creates a time_log (only admin)
+    Creates a time_log if user belongs to `?project_id` project
 
     _body_
     ```json
@@ -254,7 +254,7 @@ Is implemented with a Redis container, it caches the GET views at high level
 
     **DELETE**
     
-    Delete a time_log if user was the logger (admin deleted them all)
+    Delete a time_log if user was the logger (admin deletes them all)
 
 ## [Crud](#crud)
 In this module there are the classes that access to Database.
